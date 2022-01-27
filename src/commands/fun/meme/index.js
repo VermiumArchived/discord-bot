@@ -9,7 +9,7 @@ module.exports = {
   category: 'fun',
   data: new SlashCommandBuilder()
     .setName('meme')
-    .setDescription('Send a random meme from reddit.com/r/memes.'),
+    .setDescription('Send a random meme from r/memes.'),
   async execute(interaction) {
     const { client } = interaction.user;
     const { user } = client;
