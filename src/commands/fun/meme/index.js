@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
-const { success, error } = require('../../handlers');
+const { success, error } = require('../../../handlers');
 module.exports = {
   permission: { default: true },
   guildOnly: false,

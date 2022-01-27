@@ -13,13 +13,19 @@ db.connectDB();
 
   const commandFolders = fs.readdirSync('./src/commands');
 
-  for (const folder of commandFolders) {
-    const commandFiles = fs
-      .readdirSync(`./src/commands/${folder}`)
-      .filter((file) => file.endsWith('.js'));
-    for (const file of commandFiles) {
-      const command = require(`./commands/${folder}/${file}`);
+  for (const folderOne of commandFolders) {
+    const folders = fs.readdirSync(`./src/commands/${folderOne}`);
+
+    for (const folder of folders) {
+      const command = require(`./commands/${folderOne}/${folder}/index.js`);
       client.commands.set(command.data.name, command);
+      // const commandFiles = fs
+      //   .readdirSync(`./src/commands/${folderOne}/${folder}`)
+      //   .filter((file) => file.endsWith('.js'));
+      // for (const file of commandFiles) {
+      //   const command = require(`./commands/${folder}/${file}`);
+      //   client.commands.set(command.data.name, command);
+      // }
     }
   }
 

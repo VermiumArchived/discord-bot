@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, Permissions } = require('discord.js');
-const { error, success } = require('../../handlers');
+const { error, success } = require('../../../handlers');
 
 module.exports = {
   permission: { default: true },
