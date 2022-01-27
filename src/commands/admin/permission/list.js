@@ -8,16 +8,16 @@ module.exports = async (interaction) => {
   if (roleDB) {
     return success(interaction, {
       color: 0x99cc99,
-      title: 'Role Permissions',
-      description: `${role} has permission to execute:\n${roleDB.permissions.map((x) => x)}`,
+      title: `Permissions for ${role.name}:`,
+      description: `${role} has permission to use${roleDB.permissions.map((x) => ` ${x}`)}.`,
       ephemeral: true,
       thumbnail: true,
     });
   } else {
     return error(interaction, {
       color: 0x99cc99,
-      title: 'Role Permissions',
-      description: `${role} has no permissions`,
+      title: `Permissions not set for ${role.name}:`,
+      description: `No permission set for ${role}.\nTo set a permission use /permission add [role] [command].`,
       ephemeral: true,
       thumbnail: true,
     });
