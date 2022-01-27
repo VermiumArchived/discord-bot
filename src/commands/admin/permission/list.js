@@ -8,19 +8,18 @@ module.exports = async (interaction) => {
   if (roleDB) {
     return success(interaction, {
       color: 0x99cc99,
-      title: 'Removed Permission',
+      title: 'Role Permissions',
       description: `${role} has permission to execute:\n${roleDB.permissions.map((x) => x)}`,
       ephemeral: true,
       thumbnail: true,
     });
   } else {
-    interaction,
-      {
-        color: 0x99cc99,
-        title: 'Role Permission',
-        description: `${role} has no permissions`,
-        ephemeral: true,
-        thumbnail: true,
-      };
+    return error(interaction, {
+      color: 0x99cc99,
+      title: 'Role Permissions',
+      description: `${role} has no permissions`,
+      ephemeral: true,
+      thumbnail: true,
+    });
   }
 };

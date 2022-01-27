@@ -18,27 +18,43 @@ module.exports = async (interaction) => {
       }
     }
   }
+  const role = interaction.options.getRole('role');
+  function roleId(role) {
+    if (role) {
+      return role.id;
+    } else {
+      return guild.id;
+    }
+  }
 
-  const defaultPermDB = await permission.findOne({ guildID: guild.id, roleID: guild.id });
+  const defaultPermDB = await permission.findOne({
+    guildID: guild.id,
+    roleID: roleId(role),
+  });
+
   if (!defaultPermDB) {
     permission
-      .create({ guildID: guild.id, roleID: guild.id, permissions: perms })
+      .create({ guildID: guild.id, roleID: roleId(role), permissions: perms })
       .then(async () => {
         return success(interaction, {
           title: 'Default Permissions',
-          description: `Successfully created default commands: ${perms.map((x) => x)}`,
+          description: `Successfully created default commands: ${perms.map((x) => x)} for role: ${
+            role || '@everyone'
+          }`,
           ephemeral: true,
           thumbnail: true,
         });
       });
   } else {
     permission
-      .updateOne({ guildID: guild.id, roleID: guild.id }, { permissions: perms })
+      .updateOne({ guildID: guild.id, roleID: roleId(role) }, { permissions: perms })
       .then(async () => {
         return success(interaction, {
           color: 0x99cc99,
           title: 'Default Permissions',
-          description: `Successfully configured commands: ${perms.map((x) => x)}`,
+          description: `Successfully configured commands: ${perms.map((x) => x)} for role: ${
+            role || '@everyone'
+          }`,
           ephemeral: true,
           thumbnail: true,
         });
