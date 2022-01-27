@@ -4,20 +4,21 @@ const fs = require('fs');
 module.exports = async (interaction) => {
   const { guild } = interaction;
   let perms = [];
-  const commandFolders = fs.readdirSync('./src/commands');
 
-  for (const folder of commandFolders) {
-    const commandFiles = fs
-      .readdirSync(`./src/commands/${folder}`)
-      .filter((file) => file.endsWith('.js'));
-    for (const file of commandFiles) {
-      const command = require(`../../commands/${folder}/${file}`);
-      const commandData = command.data.toJSON();
-      if (command.permission.default === true) {
+  const commandCategories = fs.readdirSync('./src/commands');
+
+  for (const category of commandCategories) {
+    const commands = fs.readdirSync(`./src/commands/${category}`);
+
+    for (const command of commands) {
+      const cmd = require(`../../${category}/${command}/index.js`);
+      const commandData = cmd.data.toJSON();
+      if (cmd.permission.default === true) {
         perms.push(commandData.name);
       }
     }
   }
+
   const defaultPermDB = await permission.findOne({ guildID: guild.id, roleID: guild.id });
   if (!defaultPermDB) {
     permission
