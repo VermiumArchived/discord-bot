@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const axios = require('axios');
-
+const { success, error } = require('../../handlers');
 module.exports = {
   permission: { default: true },
   guildOnly: false,
@@ -19,19 +19,22 @@ module.exports = {
         // handle success
         const response = res.data[0].data.children;
         const content = response[0].data;
-        const embed = new MessageEmbed()
-          .setColor('#99cc99')
-          .setTitle(`${content.title}`)
-          .setTimestamp()
-          .setImage(content.url)
-          .setFooter({
+        const embed = {
+          color: 0x99cc99,
+          title: content.title,
+          image: {
+            url: content.url,
+          },
+          timestamp: new Date(),
+          footer: {
             text: `${user.username}︱👍 ${content.ups}︱👎 ${content.downs}`,
-            iconURL: user.displayAvatarURL(),
-          });
+            icon_url: user.displayAvatarURL(),
+          },
+        };
+
         await interaction.reply({ embeds: [embed], ephemeral: false });
       })
       .catch(function (error) {
-        console.log('COMMAND ERROR');
         console.log(error);
       });
   },

@@ -2,8 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const permission = require('../../db/models/permissionSchema');
 const fs = require('fs');
-const errorHandler = require('../../handlers/error');
-const successHandler = require('../../handlers/success');
+const { error, success } = require('../../handlers');
 
 module.exports = {
   permission: { default: false },
@@ -39,10 +38,11 @@ module.exports = {
           .create({ guildID: guild.id, roleID: role.id, permissions })
           .then(async () => {
             console.log('Created', { guildID: guild.id, roleID: role.id });
-            return successHandler(interaction, {
+            return success(interaction, {
               title: 'Created Permissions',
               description: `Successfully created permission node for ${role} and added command: ${command} to the role.`,
               ephemeral: false,
+              thumbnail: true,
             });
           });
       } else {
@@ -50,11 +50,13 @@ module.exports = {
           .findOneAndUpdate({ guildID: guild.id, roleID: role.id }, { $push: { permissions } })
           .then(async () => {
             console.log('Updated', { guildID: guild.id, roleID: role.id });
-            return successHandler(interaction, {
-              title: 'Updated Permissions',
-              description: `Successfully added command: ${command} to role: ${role}`,
-              ephemeral: false,
-            });
+
+            // return successHandler(interaction, {
+            //   title: 'Updated Permissions',
+            //   description: `Successfully added command: ${command} to role: ${role}`,
+            //   ephemeral: false,
+            //   thumbnail: true,
+            // });
           });
       }
     } else if (interaction.options.getSubcommand() === 'default' && interaction.inGuild() == true) {
@@ -85,6 +87,12 @@ module.exports = {
               roleID: guild.id,
               permissions: perms,
             });
+            // return successHandler(interaction, {
+            //   title: 'Default Permission',
+            //   description: 'Successfully created default permissions',
+            //   ephemeral: true,
+            //   thumbnail: true,
+            // });
           });
       } else {
         console.log('Found');
@@ -96,11 +104,12 @@ module.exports = {
               roleID: guild.id,
               permissions: perms,
             });
-            return successHandler(interaction, {
-              title: 'Default Permission',
-              description: 'Successfully updated default permissions',
-              ephemeral: true,
-            });
+            // return successHandler(interaction, {
+            //   title: 'Default Permission',
+            //   description: 'Successfully updated default permissions',
+            //   ephemeral: true,
+            //   thumbnail: true,
+            // });
           });
       }
     }
