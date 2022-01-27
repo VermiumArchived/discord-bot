@@ -9,7 +9,7 @@ module.exports = async (interaction, embed, ephemeral) => {
     .then(async (response) => {
       const footer = (footer) => {
         if (footer) {
-          return `${footer}\n${user.username}︱ ID: ${response._id}`;
+          return `${user.username}︱ ID: ${response._id}\n${footer}`;
         } else {
           return `${user.username}︱ ID: ${response._id}`;
         }
