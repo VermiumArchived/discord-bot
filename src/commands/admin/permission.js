@@ -56,7 +56,6 @@ module.exports = {
         await permission
           .create({ guildID: guild.id, roleID: role.id, permissions })
           .then(async () => {
-            console.log('Created', { guildID: guild.id, roleID: role.id });
             return success(interaction, {
               title: 'Created Permissions',
               description: `Successfully created permission node for ${role} and added command: ${command} to the role.`,
@@ -64,19 +63,22 @@ module.exports = {
               thumbnail: true,
             });
           });
-      } else {
+      } else if (!roleDB.permissions.includes(command)) {
         await permission
           .findOneAndUpdate({ guildID: guild.id, roleID: role.id }, { $push: { permissions } })
           .then(async () => {
-            console.log('Updated', { guildID: guild.id, roleID: role.id });
-
-            // return successHandler(interaction, {
-            //   title: 'Updated Permissions',
-            //   description: `Successfully added command: ${command} to role: ${role}`,
-            //   ephemeral: false,
-            //   thumbnail: true,
-            // });
+            return success(interaction, {
+              title: 'Added Permissions',
+              description: `Successfully added command: ${command} for ${role}.`,
+              ephemeral: true,
+              thumbnail: true,
+            });
           });
+      } else {
+        return error(interaction, {
+          title: 'Permission exists',
+          description: `${command} already is allowed for ${role}`,
+        });
       }
     } else if (interaction.options.getSubcommand() === 'default' && interaction.inGuild() == true) {
       const { guild } = interaction;
@@ -97,21 +99,27 @@ module.exports = {
       }
       const defaultPermDB = await permission.findOne({ guildID: guild.id, roleID: guild.id });
       if (!defaultPermDB) {
-        console.log('Not Found');
         permission
           .create({ guildID: guild.id, roleID: guild.id, permissions: perms })
           .then(async () => {
-            console.log('Created default', {
-              guildID: guild.id,
-              roleID: guild.id,
-              permissions: perms,
+            return success(interaction, {
+              title: 'Default Permissions',
+              description: `Successfully created default commands: ${perms.map((x) => x)}`,
+              ephemeral: true,
+              thumbnail: true,
             });
-            // return successHandler(interaction, {
-            //   title: 'Default Permission',
-            //   description: 'Successfully created default permissions',
-            //   ephemeral: true,
-            //   thumbnail: true,
-            // });
+          });
+      } else {
+        permission
+          .updateOne({ guildID: guild.id, roleID: guild.id }, { permissions: perms })
+          .then(async () => {
+            return success(interaction, {
+              color: 0x99cc99,
+              title: 'Default Permissions',
+              description: `Successfully configured commands: ${perms.map((x) => x)}`,
+              ephemeral: true,
+              thumbnail: true,
+            });
           });
       }
     } else if (interaction.options.getSubcommand() === 'remove' && interaction.inGuild() == true) {
@@ -121,18 +129,15 @@ module.exports = {
       let permissions = [];
       permissions.push(command);
       const roleDB = await permission.findOne({ guildID: guild.id, roleID: role.id });
-      console.log(permissions);
-      console.log(roleDB);
       if (roleDB) {
-        console.log(roleDB);
         await permission
           .findOneAndUpdate(
             { guildID: guild.id, roleID: role.id },
             { $pull: { permissions: command } }
           )
           .then(async () => {
-            console.log('Removed Permission', { guildID: guild.id, roleID: role.id });
             return success(interaction, {
+              color: 0x99cc99,
               title: 'Removed Permission',
               description: `Successfully removed permission to execute command: ${command} for ${role}.`,
               ephemeral: true,
@@ -140,76 +145,35 @@ module.exports = {
             });
           });
       } else {
-        console.log('NOT FOUND');
+        return error(interaction, {
+          color: 0x99cc99,
+          title: 'Removed Permission',
+          description: `${role} has no permission to execute:\n${command}`,
+          ephemeral: true,
+          thumbnail: true,
+        });
       }
     } else if (interaction.options.getSubcommand() === 'list' && interaction.inGuild() == true) {
       const role = interaction.options.getRole('role');
       const guild = interaction.guild;
       const roleDB = await permission.findOne({ guildID: guild.id, roleID: role.id });
-      console.log(roleDB);
       if (roleDB) {
-        console.log(roleDB);
         return success(interaction, {
+          color: 0x99cc99,
           title: 'Removed Permission',
           description: `${role} has permission to execute:\n${roleDB.permissions.map((x) => x)}`,
           ephemeral: true,
           thumbnail: true,
         });
       } else {
-        console.log('NOT FOUND');
-      }
-    } else if (interaction.options.getSubcommand() === 'default' && interaction.inGuild() == true) {
-      const { guild } = interaction;
-      let perms = [];
-      const commandFolders = fs.readdirSync('./src/commands');
-
-      for (const folder of commandFolders) {
-        const commandFiles = fs
-          .readdirSync(`./src/commands/${folder}`)
-          .filter((file) => file.endsWith('.js'));
-        for (const file of commandFiles) {
-          const command = require(`../../commands/${folder}/${file}`);
-          const commandData = command.data.toJSON();
-          if (command.permission.default === true) {
-            perms.push(commandData.name);
-          }
-        }
-      }
-      const defaultPermDB = await permission.findOne({ guildID: guild.id, roleID: guild.id });
-      if (!defaultPermDB) {
-        console.log('Not Found');
-        permission
-          .create({ guildID: guild.id, roleID: guild.id, permissions: perms })
-          .then(async () => {
-            console.log('Created default', {
-              guildID: guild.id,
-              roleID: guild.id,
-              permissions: perms,
-            });
-            // return successHandler(interaction, {
-            //   title: 'Default Permission',
-            //   description: 'Successfully created default permissions',
-            //   ephemeral: true,
-            //   thumbnail: true,
-            // });
-          });
-      } else {
-        console.log('Found');
-        permission
-          .findOneAndUpdate({ guildID: guild.id, roleID: guild.id }, { permissions: perms })
-          .then(async () => {
-            console.log('Updated default', {
-              guildID: guild.id,
-              roleID: guild.id,
-              permissions: perms,
-            });
-            // return successHandler(interaction, {
-            //   title: 'Default Permission',
-            //   description: 'Successfully updated default permissions',
-            //   ephemeral: true,
-            //   thumbnail: true,
-            // });
-          });
+        interaction,
+          {
+            color: 0x99cc99,
+            title: 'Role Permission',
+            description: `${role} has no permissions`,
+            ephemeral: true,
+            thumbnail: true,
+          };
       }
     }
   },
