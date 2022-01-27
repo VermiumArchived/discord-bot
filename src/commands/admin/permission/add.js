@@ -1,4 +1,7 @@
-module.exports = async () => {
+const permission = require('../../../db/models/permissionSchema');
+const { error, success } = require('../../../handlers');
+
+module.exports = async (interaction) => {
   const role = interaction.options.getRole('role');
   const command = interaction.options.getString('command');
   const guild = interaction.guild;
