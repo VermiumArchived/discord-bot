@@ -10,7 +10,7 @@ module.exports = async (interaction, embed, ephemeral) => {
       const template = {
         color: 0xf76363,
         footer: {
-          text: `${user.username}︱ ID: ${response._id}`,
+          text: `${user.username}︱ ID: ${response._id}${embed.footer}`,
           icon_url: user.displayAvatarURL(),
         },
       };
