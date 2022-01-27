@@ -2,20 +2,14 @@ const mongoose = require('mongoose');
 
 const permissionSchema = new mongoose.Schema(
   {
-    guild: {
+    roleID: {
       type: mongoose.SchemaTypes.String,
-      required: true,
     },
-    role: {
+    guildID: {
       type: mongoose.SchemaTypes.String,
-      required: true,
-      index: false,
     },
-    command: {
-      type: mongoose.SchemaTypes.String,
-      required: true,
-      unique: false,
-      index: false,
+    permissions: {
+      type: mongoose.SchemaTypes.Array,
     },
   },
   { timestamps: true }

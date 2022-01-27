@@ -31,6 +31,7 @@ module.exports = {
         await interaction.reply({ embeds: [embed], ephemeral: false });
       })
       .catch(function (error) {
+        console.log('COMMAND ERROR');
         console.log(error);
       });
   },
