@@ -6,7 +6,6 @@ module.exports = {
   permission: { default: true },
   guildOnly: false,
   botAdminOnly: false,
-  category: 'fun',
   data: new SlashCommandBuilder()
     .setName('meme')
     .setDescription('Send a random meme from r/memes.'),
