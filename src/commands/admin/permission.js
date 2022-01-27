@@ -59,7 +59,13 @@ module.exports = {
             return success(interaction, {
               title: 'Created Permissions',
               description: `Successfully created permission node for ${role} and added command: ${command} to the role.`,
-              ephemeral: false,
+              ephemeral: true        return success(interaction, {
+                color: 0x99cc99,
+                title: 'Removed Permission',
+                description: `${role} has permission to execute:\n${roleDB.permissions.map((x) => x)}`,
+                ephemeral: true,
+                thumbnail: true,
+              });,
               thumbnail: true,
             });
           });
