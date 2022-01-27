@@ -11,21 +11,14 @@ db.connectDB();
 (async () => {
   client.commands = new Collection();
 
-  const commandFolders = fs.readdirSync('./src/commands');
+  const commandCategories = fs.readdirSync('./src/commands');
 
-  for (const folderOne of commandFolders) {
-    const folders = fs.readdirSync(`./src/commands/${folderOne}`);
+  for (const category of commandCategories) {
+    const commands = fs.readdirSync(`./src/commands/${category}`);
 
-    for (const folder of folders) {
-      const command = require(`./commands/${folderOne}/${folder}/index.js`);
-      client.commands.set(command.data.name, command);
-      // const commandFiles = fs
-      //   .readdirSync(`./src/commands/${folderOne}/${folder}`)
-      //   .filter((file) => file.endsWith('.js'));
-      // for (const file of commandFiles) {
-      //   const command = require(`./commands/${folder}/${file}`);
-      //   client.commands.set(command.data.name, command);
-      // }
+    for (const command of commands) {
+      const cmd = require(`./commands/${category}/${command}/index.js`);
+      client.commands.set(cmd.data.name, cmd);
     }
   }
 
