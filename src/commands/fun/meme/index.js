@@ -22,7 +22,7 @@ module.exports = {
           color: 0x99cc99,
           title: content.title,
           image: { url: content.url },
-          footer: `︱👍 ${content.ups}︱👎 ${content.downs}`,
+          footer: `👍 ${content.ups}︱👎 ${content.downs}`,
           ephemeral: false,
         });
       })
