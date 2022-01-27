@@ -7,10 +7,17 @@ module.exports = async (interaction, embed, ephemeral) => {
   await success
     .create({ command: interaction, interaction: interactionJSON })
     .then(async (response) => {
+      const footer = (footer) => {
+        if (footer) {
+          return `${footer}\n${user.username}︱ ID: ${response._id}`;
+        } else {
+          return `${user.username}︱ ID: ${response._id}`;
+        }
+      };
       const template = {
         color: 0x99cc99,
         footer: {
-          text: `${user.username}${embed.footer}︱ ID: ${response._id}`,
+          text: footer(embed.footer),
           icon_url: user.displayAvatarURL(),
         },
       };
