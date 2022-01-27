@@ -1,5 +1,7 @@
 const permissions = require('../db/models/permissionSchema');
 const { developerId } = require('../config.json');
+const { error, success } = require('../handlers');
+
 module.exports = {
   name: 'interactionCreate',
   async execute(interaction) {
@@ -13,20 +15,26 @@ module.exports = {
         const granted = result.some((x) => member._roles.includes(x.roleID));
         if (granted || user.id == guild.ownerId || user.id == developerId) {
           if (!interaction.inGuild() && command.guildOnly) {
-            await interaction.reply({
-              content: `Guild Only!`,
+            await error(interaction, {
+              title: 'Permission Denied',
+              description: 'This command is only allowed to be executed on the guild.',
               ephemeral: true,
             });
           } else if (user.id != developerId && command.botAdminOnly) {
-            await interaction.reply({
-              content: `Bot Admin Only!`,
+            await error(interaction, {
+              title: 'Permission Denied',
+              description: 'This command is only allowed to be executed by bot admins.',
               ephemeral: true,
             });
           } else {
             await command.execute(interaction);
           }
         } else {
-          await interaction.reply({ content: 'You do not have permission!', ephemeral: true });
+          await error(interaction, {
+            title: 'Permission Denied',
+            description: 'You do not have permission to perform this action.',
+            ephemeral: true,
+          });
         }
       });
     } catch (error) {
