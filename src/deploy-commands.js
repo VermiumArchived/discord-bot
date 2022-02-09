@@ -1,3 +1,5 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 /* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const { REST } = require('@discordjs/rest');
