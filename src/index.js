@@ -13,7 +13,7 @@ require('./db').connect();
 
   fs.promises.readdir('./src/commands').then(async (category) => {
     fs.promises.readdir(`./src/commands/${category}`).then((command) => {
-      /* eslint-disable global-require, import/no-dynamic-require */
+      /* eslint-disable-next-line global-require, import/no-dynamic-require */
       const cmd = require(`./commands/${category}/${command}`);
       client.commands.set(cmd.data.name, cmd);
     });
@@ -23,6 +23,7 @@ require('./db').connect();
     .readdir('./src/events')
     .then(async (file) => {
       file.forEach(async (fileName) => {
+        /* eslint-disable-next-line global-require, import/no-dynamic-require */
         const event = require(`./events/${fileName}`);
         if (event.once) {
           client.once(event.name, (...args) => event.execute(...args));
