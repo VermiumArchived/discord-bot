@@ -4,6 +4,8 @@ config.json
 package-lock.json
 
 # Logs
+log.json
+
 logs
 *.log
 npm-debug.log*
