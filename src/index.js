@@ -13,28 +13,27 @@ require('./handlers/translation')();
 (async () => {
   client.commands = new Collection();
 
-  fs.promises.readdir('./src/commands').then(async (category) => {
-    fs.promises.readdir(`./src/commands/${category}`).then((command) => {
-      /* eslint-disable-next-line global-require, import/no-dynamic-require */
+  const categoryFolders = fs.readdirSync('./src/commands');
+
+  for (const category of categoryFolders) {
+    const commandFiles = fs.readdirSync(`./src/commands/${category}`);
+
+    for (const command of commandFiles) {
       const cmd = require(`./commands/${category}/${command}`);
       client.commands.set(cmd.data.name, cmd);
-    });
-  });
+    }
+  }
 
-  fs.promises
-    .readdir('./src/events')
-    .then(async (file) => {
-      file.forEach(async (fileName) => {
-        /* eslint-disable-next-line global-require, import/no-dynamic-require */
-        const event = require(`./events/${fileName}`);
-        if (event.once) {
-          client.once(event.name, (...args) => event.execute(...args));
-        } else {
-          client.on(event.name, (...args) => event.execute(...args));
-        }
-      });
-    })
-    .catch((e) => logger.error(e));
+  const eventFiles = fs.readdirSync('./src/events').filter(async (file) => file.endsWith('.js'));
+
+  for (const file of eventFiles) {
+    const event = require(`./events/${file}`);
+    if (event.once) {
+      client.once(event.name, (...args) => event.execute(...args));
+    } else {
+      client.on(event.name, (...args) => event.execute(...args));
+    }
+  }
 
   await client.login(token);
 })();
