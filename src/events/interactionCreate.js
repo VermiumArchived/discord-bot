@@ -1,3 +1,4 @@
+const i18next = require('i18next');
 const logger = require('../logger');
 const permissions = require('../db/models/permissionSchema');
 const { developerId } = require('../config.json');
@@ -30,6 +31,12 @@ module.exports = {
               ephemeral: true,
             });
           } else {
+            await logger.debug(
+              i18next.t('debug:interactionCreate:commandExecuted', {
+                commandName,
+                user,
+              })
+            );
             await command.execute(interaction);
           }
         } else {
