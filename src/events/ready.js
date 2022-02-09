@@ -5,6 +5,6 @@ module.exports = {
   name: 'ready',
   once: true,
   async execute(client) {
-    logger.info(i18next.t('common:ready', { client }));
+    logger.info(i18next.t('ready:message', { client }));
   },
 };
