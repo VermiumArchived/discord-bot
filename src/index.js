@@ -1,36 +1,37 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
+const logger = require('./logger');
 
 const { token } = require('./config.json');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 
-const db = require('./db');
+require('./db').connect();
 
-db.connectDB();
 (async () => {
   client.commands = new Collection();
 
-  const commandCategories = fs.readdirSync('./src/commands');
-
-  for (const category of commandCategories) {
-    const commands = fs.readdirSync(`./src/commands/${category}`);
-
-    for (const command of commands) {
-      const cmd = require(`./commands/${category}/${command}/index.js`);
+  fs.promises.readdir('./src/commands').then(async (category) => {
+    fs.promises.readdir(`./src/commands/${category}`).then((command) => {
+      /* eslint-disable global-require, import/no-dynamic-require */
+      const cmd = require(`./commands/${category}/${command}`);
       client.commands.set(cmd.data.name, cmd);
-    }
-  }
+    });
+  });
 
-  const eventFiles = fs.readdirSync('./src/events').filter(async (file) => file.endsWith('.js'));
+  fs.promises
+    .readdir('./src/events')
+    .then(async (file) => {
+      file.forEach(async (fileName) => {
+        const event = require(`./events/${fileName}`);
+        if (event.once) {
+          client.once(event.name, (...args) => event.execute(...args));
+        } else {
+          client.on(event.name, (...args) => event.execute(...args));
+        }
+      });
+    })
+    .catch((e) => logger.error(e));
 
-  for (const file of eventFiles) {
-    const event = require(`./events/${file}`);
-    if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args));
-    } else {
-      client.on(event.name, (...args) => event.execute(...args));
-    }
-  }
   await client.login(token);
 })();
