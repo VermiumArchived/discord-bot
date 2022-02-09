@@ -1,3 +1,4 @@
+const logger = require('../logger');
 const permissions = require('../db/models/permissionSchema');
 const { developerId } = require('../config.json');
 const { error, success } = require('../handlers');
@@ -11,9 +12,11 @@ module.exports = {
 
     try {
       permissions.find({ guildID: guild.id, permissions: commandName }).then(async (result) => {
+        /* eslint-disable-next-line no-underscore-dangle */
         member._roles.push(guild.id);
+        /* eslint-disable-next-line no-underscore-dangle */
         const granted = result.some((x) => member._roles.includes(x.roleID));
-        if (granted || user.id == guild.ownerId || user.id == developerId) {
+        if (granted || user.id === guild.ownerId || user.id === developerId) {
           if (!interaction.inGuild() && command.guildOnly) {
             await error(interaction, {
               title: 'Permission Denied',
@@ -37,9 +40,9 @@ module.exports = {
           });
         }
       });
-    } catch (error) {
-      console.error(error);
-      return await interaction.reply({
+    } catch (e) {
+      await logger.error(e);
+      await interaction.reply({
         content: `There was an error while executing this command!\n${error}`,
         ephemeral: true,
       });
