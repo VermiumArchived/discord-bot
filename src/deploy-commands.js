@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
@@ -9,13 +10,17 @@ const logger = require('./logger');
 
 const commands = [];
 
-fs.promises.readdir('./src/commands').then(async (category) => {
-  fs.promises.readdir(`./src/commands/${category}`).then((command) => {
-    /* eslint-disable global-require, import/no-dynamic-require */
-    const cmd = require(`./commands/${category}/${command}`);
-    commands.push(cmd.data.toJSON());
-  });
-});
+const categoryFolders = fs.readdirSync('./src/commands');
+
+for (const category of categoryFolders) {
+  const commandFiles = fs
+    .readdirSync(`./src/commands/${category}`)
+    .filter((file) => file.endsWith('.js'));
+  for (const file of commandFiles) {
+    const command = require(`./commands/${category}/${file}`);
+    commands.push(command.data.toJSON());
+  }
+}
 
 const rest = new REST({ version: '9' }).setToken(token);
 
