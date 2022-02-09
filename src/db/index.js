@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+const i18next = require('i18next');
 const { mongodb } = require('../config.json');
 
 const { connectionString } = mongodb;
@@ -9,7 +10,7 @@ module.exports = {
   async connect() {
     try {
       await mongoose.connect(connectionString);
-      logger.info('Connected to the database');
+      logger.info(i18next.t('db:connected'));
     } catch (e) {
       logger.error(e);
     }
