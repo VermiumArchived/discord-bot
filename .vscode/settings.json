@@ -20,14 +20,13 @@
   // },
   "editor.formatOnSave": true,
   "javascript.format.enable": false,
-  "eslint.autoFixOnSave": true,
   "files.eol": "\n",
   "prettier.endOfLine": "lf",
   "prettier.singleQuote": true,
   "prettier.trailingComma": "es5",
   "peacock.color": "#369",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll": true
   },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#407fbf",
@@ -46,5 +45,5 @@
     "titleBar.inactiveBackground": "#33669999",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "cSpell.words": ["discordjs", "Zyner"]
+  "cSpell.words": ["discordjs", "pino", "Zyner"]
 }
