@@ -1,7 +1,7 @@
 const logger = require('../logger');
 const permissions = require('../db/models/permissionSchema');
 const { developerId } = require('../config.json');
-const { error, success } = require('../handlers');
+const { error } = require('../handlers');
 
 module.exports = {
   name: 'interactionCreate',
@@ -23,7 +23,7 @@ module.exports = {
               description: 'This command is only allowed to be executed on the guild.',
               ephemeral: true,
             });
-          } else if (user.id != developerId && command.botAdminOnly) {
+          } else if (user.id !== developerId && command.botAdminOnly) {
             await error(interaction, {
               title: 'Permission Denied',
               description: 'This command is only allowed to be executed by bot admins.',

@@ -8,5 +8,5 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "rules": { "comma-dangle": "off" }
+  "rules": { "comma-dangle": "off", "object-curly-newline": "off" }
 }
