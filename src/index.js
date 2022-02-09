@@ -8,6 +8,8 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 require('./db').connect();
 
+require('./handlers/translation')();
+
 (async () => {
   client.commands = new Collection();
 

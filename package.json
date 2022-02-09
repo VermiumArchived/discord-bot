@@ -25,6 +25,7 @@
     "axios": "^0.25.0",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.6.0",
+    "i18next": "^21.6.11",
     "mongoose": "^6.1.8",
     "pino": "^7.0.0-rc.9"
   },
